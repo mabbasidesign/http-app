@@ -2,6 +2,20 @@ import React, { Component } from "react";
 import "./App.css";
 import axios from 'axios';
 
+axios.interceptors.response.use(null, error => {
+  const expectedError = 
+  error.response &&
+  error.response >= 400 &&
+  error.response < 500;
+
+  if(!expectedError){
+    console.log("Intescepror called.", error);
+    alert("an euexpected alert happend.");
+  }
+
+  return Promise.rejecte(error);
+});
+
 const apiEndpoint = "https://jsonplaceholder.typicode.com/posts";
 
 class App extends Component {
@@ -39,7 +53,7 @@ class App extends Component {
    this.setState({ posts });
 
    try{
-     await axios.delete(apiEndpoint + '/' + post.id);
+     await axios.delete(apiEndpoint + '/999' + post.id);
      throw new Error("");
    }
    catch(ex){
@@ -47,10 +61,6 @@ class App extends Component {
      this.setState({ posts: originalPost });
      if(ex.response && ex.request === 404)
         alert("this post has already benn deleted.");
-      else{
-        console.log("Logging the error", ex);
-          alert("an euexpected alert happend.");
-      }
    }
 
   };
